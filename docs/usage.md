@@ -6,8 +6,8 @@
 First thing first, some notes:
  
  - The service does not support full OpenAI API as we do not have access to
-   it, check [notes](./notes.md) section for more info, but still the tool was
-   does give some hook point where that functionality could be added
+   it, check [notes](./notes.md) section for more info, but still the tool
+   does give some hook points where that functionality could be added
 
  - We didn't have time for code documentation, but we'll do it as soon as possible
 
@@ -19,9 +19,9 @@ First thing first, some notes:
 
 1. Update settings
 
-Set `proxy url` and `api key`. `Destination folder` is the staging are where projects' files are saved
+Set `proxy url` and `api key`. `Destination folder` is the staging area where projects' files are saved
 
- -  Our web app makes the request to chatgpt by a reverse proxy which is implemented by https://github.com/PawanOsman/ChatGPT project. The reverse proxy can be hosted by yourself or you can use the proxy server they host, in this case you must request a key [gist instruction](https://gist.github.com/PawanOsman/72dddd0a12e5829da664a43fc9b9cf9a).
+ -  Our web app makes the request to chatgpt by a reverse proxy which is implemented by https://github.com/PawanOsman/ChatGPT project. The reverse proxy can be hosted by yourself or you can use the proxy server which they do host, in this case you must request a key ([gist instruction](https://gist.github.com/PawanOsman/72dddd0a12e5829da664a43fc9b9cf9a)).
  - Check [notes](./notes.md) section for more info about it
 
 ![usage1.jpg](./imgs/usage1.jpg)
@@ -32,7 +32,7 @@ Set `proxy url` and `api key`. `Destination folder` is the staging are where pro
 
 The source code must be sent as an archive .zip, then we choose if we want to delete it after the scan is complete.
  - `Prompt model` : Select the prompt model to instruct chatgpt (how to upload a prompt model and how it works is shown here: [prompt_details](./prompt_details.md))
- - `Waiting time` : if one request to openai per file is selected, the checkbox on the left, then we also define a timeout per request.
+ - `Waiting time` : if one request to openai per file is selected (the checkbox on the left) then we also define the waiting time per request.
  - `Single request` : As default, SourceGPT will collpase each file's content into a single text splitted by the file separator (more info: [prompt_details](./prompt_details.md))
 
 In the image below i selected the prompt "software capabilities" which does list the functionalities exposed by the software (e.g. opening a socket). The prompt was inspired by the project capa (https://github.com/mandiant/capa).

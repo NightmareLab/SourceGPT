@@ -41,6 +41,6 @@ Spawn the service:
 python server.py --host 127.0.0.1 --mongo_ip 127.0.0.1 --debug
 ```
 
- - NOTE: if you reset the db then the web service should be restarted and staging folder (default: /tmp/db_capa) should be cleared of the previously created folder
+ - NOTE: if you reset the db then the web service should be restarted and the staging folder's content (default: /tmp/db_capa) should be deleted.
 
 

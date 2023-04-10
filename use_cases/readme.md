@@ -4,11 +4,12 @@
 ## smartcontract_vuln.py_tests
  - Topics: web3 smart contract vulnerabilities
  - Testing smartcontract_vuln.py prompt model
+ - Prompt inspired by https://github.com/SunWeb3Sec/DeFiVulnLabs
 
 ### MyBank.zip
 
- - It does contain a integer overflow
- - As can be seen from the output we have found the vuln and also some false positive
+ - It does contain an integer overflow
+ - As can be seen from the output we have found the vuln and also some false positives
  - We can ask more selective question, e.g. to find where's the code location of such vuln, or write a prompt per vulnerability should be the best option
  - Example of output:
 ```
@@ -22,10 +23,11 @@
 ## capa_minimal.py_tests
  - Topics: malware analysis
  - Testing capa_minimal.py prompt model
+ - Prompt inspired by https://github.com/fireeye/capa/
 
 ### NormalProgramTrustMe.zip 
  - UAC bypass
- - As noted from the output, chatgpt does consider it as an exploit rather than a malware, maybe my definition is not strong, besides it gives some capabilities of the program
+ - As noted from the output, chatgpt does consider it as an exploit rather than a malware, maybe my definition is not strong enough, besides it gives some capabilities of the program
  - Example of output:
 ```
 Malware Score: 0/100 Exploit Score: 100/100 The code in the file appears to be an exploit for bypassing UAC using Event Viewer. It contains a registry entry that is used to execute a command (default is "C:\Windows\System32\colorcpl.exe") and a thread that runs "C:\Windows\System32\eventvwr.msc". The code also contains code for reading and writing files, resolving DNS
@@ -38,6 +40,7 @@ Malware Score: 0/100 Exploit Score: 100/100 The code in the file appears to be a
 ## rce_taint_analysis.py_tests
  - Topics: vulnerability research
  - Testing rce_taint_analysis.py prompt model
+ - Scenario: We have this ELF binary that we decompiled by ghidra
 
 ### Env.zip 
  - The source code was extracted with ghidra and ghidra2dwarf plugin

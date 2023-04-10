@@ -1,4 +1,4 @@
-:warning: :warning: :warning: Experimental - **PLEASE BE CAREFUL**. Intended for Reasearch purposes ONLY. :warning: :warning: :warning:
+:warning: :warning: :warning: Experimental - **PLEASE BE CAREFUL**. Intended for Research purposes ONLY. :warning: :warning: :warning:
 
 # SourceGPT
 

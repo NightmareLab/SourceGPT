@@ -4,7 +4,7 @@
 
 
 ## 2 Host your own proxy
- - To host your own reverse proxy chatgpt plus account is required (https://github.com/PawanOsman/ChatGPT#self-host-your-own-api).
+ - To host your own reverse proxy, chatgpt plus account is required (https://github.com/PawanOsman/ChatGPT#self-host-your-own-api).
  - Also note that the proxy they host does not give you the model `gpt-3.5-turbo` but instead only `text-davinci-003`, but maybe i am wrong. 
  - Still if you want better results you should host your own reverse proxy, because then you would be able to control the `chat id` which keeps track of a conversation and can be used to keep history of the chats and also can be used by chatgpt to keep its responses aligned with your initial request
 
