@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% block title %} Results {% endblock %}</h1>
+
+  {% for result in results %}
+    <!-- resultModal -->
+    <div class="modal fade" id="resultModal{{result['id']}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel1">Result</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{ result['result'] }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- resultFilesModal -->
+    <div class="modal fade" id="resultFilesModal{{result['id']}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel2">File Results</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div>
+              <table class="table table-striped table-dark">
+                {% for res_y in result['results'] %}
+                  <tr><td>Filename: {{res_y[0]}}</td></tr>
+                  <tr><td>{{res_y[1]}}</td></tr>
+                  <tr><td>  </td></tr>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endfor %}
+
+  <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        {% for x in order_view %}
+          <th scope="col">{{ x }}</th>
+        {% endfor %}
+      </tr>    
+    </thead>
+    <tbody>
+      {% for result in results %}
+        <tr>
+          {% for x in order_view %}
+            {% if x == "date": %}
+              <td scope="col">{{ result[x] }}</td>
+
+            {% elif x == "status" %}
+              {% if result[x].startswith("Error") %}
+                <td style="background-color:Tomato;" >{{ result[x] }}</td>
+              {% elif result[x] == "Completed" %}
+                <td style="background-color:MediumSeaGreen;" >{{ result[x] }}</td>
+              {% else %}
+                <td style="background-color:Orange;" >{{ result[x] }}</td>
+              {% endif %}
+
+            {% elif x == "result" %}
+              <td>
+                <a href="#" data-toggle="modal" data-target="#resultModal{{result['id']}}">Result</a> | 
+                <a href="#" data-toggle="modal" data-target="#resultFilesModal{{result['id']}}">File Results</a>
+              </td>
+
+            {% elif x == "id" %}
+              <td><a href="/api/result?id={{result[x]}}" target="_blank">{{result[x]}}</a></td>
+
+            {% elif x == "id_proj" %}
+              <td><a href="/api/project?id={{result[x]}}" target="_blank">{{result[x]}}</a></td>
+
+            {% else %}
+              <td>{{ result[x] }}</td>
+
+            {% endif %}
+
+          {% endfor %}
+        </tr>    
+      {% endfor %}
+    </tbody>
+  </table>
+
+<br />
+{% endblock %}

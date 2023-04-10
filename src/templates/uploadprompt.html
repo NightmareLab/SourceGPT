@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>{% block title %} Upload-prompt {% endblock %}</h1>
+
+  {% if status.startswith('Ok') %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:MediumSeaGreen;">Success - {{status}}</div>
+    </nav>
+
+  {% elif status != "" %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:tomato;">{{status}}</div>
+    </nav>
+
+  {% endif %}
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+  <form action="/uploadprompt" method="POST">
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="name_prompt">Name prompt:</label>
+        <input type="text"  class="form-control" placeholder="<name prompt>" id="name_prompt" name="name_prompt">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label class="form-label" for="char_separator">Char separator:</label>
+        <!--<input class="form-control" type="text" id="char_separator" name="char_separator">-->
+        <textarea class="form-control" id="char_separator" rows="2" name="char_separator"></textarea>
+        <small class="form-text text-muted">
+          (*) tells to chatgpt when a file's content ends,
+          <small class="form-text" style="color:MediumSeaGreen;">
+          (**) default value: {{extra['default_sets']['char_separator']}}
+          </small>
+        </small>
+      </div>
+      <div class="form-group col-md-4">
+        <label class="form-label" for="char_terminator">Char terminator:</label>
+        <textarea class="form-control" id="char_terminator" rows="2" name="char_terminator"></textarea>
+        <small class="form-text text-muted">
+          (*) tells to chatgpt when there's no more file's content to parse
+          <small class="form-text text-muted">
+          (**) It should be not equal to char separator
+          </small>
+          <small class="form-text" style="color:MediumSeaGreen;">
+          (***) default value: {{extra['default_sets']['char_terminator']}}
+          </small>
+        </small>
+      </div>
+
+      <div class="form-group col-md-4">
+        <label class="form-label" for="char_proj_name_holder">Project name placeholder:</label>
+        <textarea class="form-control" id="char_proj_name_holder" rows="2" name="char_proj_name_holder"></textarea>
+        <small class="form-text text-muted">
+          (*) If the 'instruction' text does require the project name inside the question, then we use this placeholder to replace then
+          <small class="form-text" style="color:MediumSeaGreen;">
+          (**) default value: {{extra['default_sets']['char_proj_name_holder']}}
+          </small>
+        </small>
+      </div>
+
+
+
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea class="form-control" id="description" rows="2" name="description"></textarea>
+    </div>
+    <br />
+
+    <div class="form-group">
+      <label for="assistant_text">Assistant text:</label>
+      <textarea class="form-control" id="assistant_text" rows="4" name="assistant_text"></textarea>
+    </div>
+    <br />
+
+    <div class="form-group">
+      <label for="instruction_text">Instruction text:</label>
+      <textarea class="form-control" id="instruction_text" rows="6" name="instruction_text"></textarea>
+    </div>
+    <br />
+
+
+    <div class="form-group">
+      <label for="blacklist_list_0">Blacklist words: 
+        <small class="form-text text-muted">
+        (skip file if it does contain blacklist word)
+        </small>
+      </label>
+
+      <div class='item'>
+        <input type="text" name="blacklist_word_0" id="blacklist_word_0" placholder="word">
+        <input type="text" name="blacklist_counter_0" id="blacklist_counter_0" placholder="counter (default: 1)">
+        <button id="add" type="button">Add +</button>
+      </div>
+      <div id="items"></div>
+    </div>
+    <br />
+
+    <button type="submit" class="btn btn-primary" value="Upload">upload</button>
+  </form>
+
+
+
+  <!-- no time to implement the right solution, this does work so it's fine for now -->
+  <script type="text/javascript">
+    $(document).ready(()=>{
+
+      let counter = 0;
+      let cc_placeholder = "$$counter$$";
+
+      let template = `
+        <div class='item'>
+          <input type="text" name="blacklist_word_$$counter$$" placholder="word">
+          <input type="text" name="blacklist_counter_$$counter$$" placholder="counter (default: 1)">
+        <button class="remove">X</button></div>
+      `;
+    
+      $("#add").on("click", ()=>{
+        counter += 1;
+        $("#items").append(template.replaceAll(cc_placeholder, '' + counter));
+      })
+    
+      $("body").on("click", ".remove", (e)=>{
+        $(e.target).parent("div").remove();
+      })
+    });
+  </script>
+
+
+<br />
+
+{% endblock %}
+

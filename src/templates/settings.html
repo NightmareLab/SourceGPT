@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <h1>{% block title %} Settings {% endblock %}</h1>
+
+  {% if status == "Ok" %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:MediumSeaGreen;">Success</div>
+    </nav>
+
+  {% elif status != "" %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:Tomato;">{{status}}</div>
+    </nav>
+
+  {% endif %}
+
+  <form id="regReq" action="/settings" method="POST">
+    <div class="form-group">
+      <label for="api_key">Openai api key</label>
+      <input type="text"  class="form-control" placeholder="<api key>" id="api_key" name="api_key">
+      <small id="folderHelp" class="form-text text-muted"> Current value is '{{api_key}}' </small>
+    </div>
+    <div class="form-group">
+      <label for="api_key">Proxy url</label>
+      <input type="text"  class="form-control" placeholder="<proxy url>" id="proxy_url" name="proxy_url">
+      <small id="folderHelp" class="form-text text-muted"> Current value is '{{proxy}}' </small>
+    </div>
+    <br />
+
+    <div class="form-group">
+      <label for="tmp_folder">Destination folder</label>
+      <input type="text"  class="form-control" placeholder="<path>" id="tmp_folder" name="tmp_folder">
+      <small id="folderHelp" class="form-text text-muted">Current value is '{{folder}}'</small>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" id="tmp_folder_make" name="tmp_folder_make">
+      <label class="form-check-label" for="tmp_folder_make">
+        Create folder
+      </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+
+
+
+{% endblock %}
