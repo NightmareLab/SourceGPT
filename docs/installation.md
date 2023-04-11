@@ -1,5 +1,9 @@
 ## Installation
 
+
+:warning: :warning: I don't know why but docker with nginx as front-end breaks, instead use the debug version compose_debug_env.yaml
+
+
 ### docker
 
 Web app hosted on localhost 8008/tcp:
