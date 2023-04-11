@@ -30,6 +30,18 @@ wrap_mongo = None
 mongo_ip = "mongo"
 
 
+
+########## Extracted from init_mongo.py
+# Type of scan
+COLLAPSE_SCAN = 0
+SINGLE_SCAN = 1
+MULTIPLE_SCAN = 2
+default_scan = COLLAPSE_SCAN
+########## 
+
+
+
+
 ###
 ## Helper functions
 #
@@ -62,11 +74,15 @@ def index():
 
 @app.route('/results')
 def results():
-  order_view = ["date", "id", "id_proj", "status", "single_scan", "result"]
+  order_view = ["date", "id", "id_proj", "status", "type_scan", "result"]
+  type_scan_list = ["collapse_scan", "single_scan", "multiple_scan"]
+
   #results = [ {x:'Ok' for x in order_view} ]
   results = wrap_mongo.get_results()
   for x in results :
     x['date'] = time.strftime("%H:%M:%S %Y-%m-%d", time.gmtime(int(x['date'])))
+    x['type_scan'] = type_scan_list[x['type_scan']]
+
   return render_template('results.html', results=results, order_view=order_view)
 
 @app.route('/prompts')
@@ -235,13 +251,18 @@ def uploadfile():
             fullpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(fullpath)
 
+            type_scan = default_scan
+            if "type_scan" in request.form :
+              type_scan = int(request.form["type_scan"])
+
             proj_id, result_id = wrap_mongo.add_blank_entry(
               fullpath,
               id_prompt = prompt_entry['id'],
-              delete_proj = "do_delete_scan" in request.form
+              delete_proj = "do_delete_scan" in request.form,
+              type_scan = type_scan
             )
 
-            if 'do_single_scan' in request.form :
+            if type_scan == SINGLE_SCAN :
 
               wtime_single_scan = None
               if "wtime_single_scan" in request.form :

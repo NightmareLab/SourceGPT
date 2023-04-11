@@ -121,6 +121,7 @@ def work(proj_id, result_id, wrap_mongo):
       prompt_sel_class,
       openai_server_ = "proxy",
       single_scan_wtime=result_entry["single_scan_wtime"],
+      type_scan=result_entry["type_scan"],
       openai_proxy_url= wrap_mongo.get_proxy()
     )
  
@@ -136,10 +137,7 @@ def work(proj_id, result_id, wrap_mongo):
       except UnicodeDecodeError :
         file_skip.append(file)
 
-    result = openai.ask(
-      query, 
-      single_scan = result_entry['single_scan']
-    )
+    result = openai.ask(query)
 
     if isinstance(result, list):
       wrap_mongo.update_result_results(result_id, "", result)

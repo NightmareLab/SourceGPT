@@ -46,22 +46,41 @@
     </div>
     <br />
 
+
+  <div class="form-row">
+    <div class="form-group col-md-2">
+    Type of scan:
+    </div>
+    <div class="form-group form-check col-md-3">
+      <input class="form-check-input" type="radio" name="type_scan" id="collapse_scan" value="0" checked>
+      <label class="form-check-label" for="collapse_scan">
+        Collapse scan
+        <small class="form-text text-muted"> (collapse file's content into a single request)</small>
+      </label>
+    </div>
+    <div class="form-group form-check col-md-3">
+      <input class="form-check-input" type="radio" name="type_scan" id="single_scan" value="1">
+      <label class="form-check-label" for="single_scan">
+        Single scan
+        <small class="form-text text-muted"> (do one question to openai per file) </small>
+      </label>
+    </div>
+    <div class="form-group form-check col-md-3">
+      <input class="form-check-input" type="radio" name="type_scan" id="multiple_scan" value="2">
+      <label class="form-check-label" for="multiple_scan">
+        Multiple scan
+        <small class="form-text text-muted"> (send on request to openai but multiple question (file's content) by refering to the same chat id </small>
+      </label>
+    </div>
+  </div>
     <div class="form-row">
-      <div class="form-group form-check col-md-2">
-        <input class="form-check-input" type="checkbox" value="" id="do_single_scan" name="do_single_scan">
-        <label class="form-check-label" for="do_single_scan">
-          Do one question to openai per file
-          <small class="form-text text-muted"> (default is that all files are collapsed in a single request)</small>
-        </label>
-      </div>
-      <div class="form-group col-md-2">
-        <label class="form-label" for="wtime_single_scan">Waiting time per request</label>
+      <div class="form-group col-md-4">
+        <label class="form-label" for="wtime_single_scan">single scan waiting time per request</label>
         <input class="form-control" type="text" id="wtime_single_scan" name="wtime_single_scan">
         <small class="form-text text-muted"> (default: {{extra['default_wtime']}}s)</small>
       </div>
     </div>
     <br />
-
     <button type="submit" class="btn btn-primary" value="Upload">upload</button>
   </form>
 

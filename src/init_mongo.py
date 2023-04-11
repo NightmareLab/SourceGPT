@@ -26,6 +26,12 @@ default_sets = {
 default_single_scan_wtime = 5  #5s
 default_proxy = "https://api.pawan.krd/v1/chat/completions"
 
+# Type of scan
+COLLAPSE_SCAN = 0
+SINGLE_SCAN = 1
+MULTIPLE_SCAN = 2
+default_scan = COLLAPSE_SCAN
+
 
 def get_template():
   template_project = {
@@ -41,7 +47,7 @@ def get_template():
     "status" : "Uploaded",
     "error" : "",
     "delete_proj" : False,
-    "single_scan": False,
+    "type_scan": default_scan,
     "single_scan_wtime" : 0,
     "result" : '',
     "results" : []
@@ -296,13 +302,17 @@ class WrapMongo(object) :
       query, 
       {
         "$set":{
-          "single_scan":True,
           "single_scan_wtime":single_scan_wtime
         }
       }
     )
 
-  def add_blank_entry(self, fullpath_name, id_prompt=0, delete_proj=False):
+  def add_blank_entry(self, 
+      fullpath_name, 
+      id_prompt=0, 
+      delete_proj=False,
+      type_scan=default_scan
+    ):
     project, result = get_template()
     proj_id = self.increment_id()
     result_id = self.increment_id("id_result")
@@ -313,6 +323,7 @@ class WrapMongo(object) :
     result['id_prompt'] = id_prompt
     result['date'] = time.time()
     result['delete_proj'] = delete_proj
+    result['type_scan'] = type_scan
     self.insert_db_projects(project)
     self.insert_db_results(result)
     return proj_id, result_id

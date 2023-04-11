@@ -7,6 +7,18 @@ import time
 # https://github.com/PawanOsman/ChatGPT
 
 
+
+
+##### extract from 'init_mongo.py'
+# Type of scan
+COLLAPSE_SCAN = 0
+SINGLE_SCAN = 1
+MULTIPLE_SCAN = 2
+default_scan = COLLAPSE_SCAN
+#####
+
+
+
 class WrapException:
   pass
 
@@ -26,6 +38,7 @@ class wrap_openai :
       top_p=0.9,
       frequency_penalty=0,
       presence_penalty=0,
+      type_scan=default_scan,
       single_scan_wtime=None,
       openai_proxy_url=None
     ):
@@ -43,6 +56,7 @@ class wrap_openai :
     self.top_p = top_p
     self.frequency_penalty = frequency_penalty
     self.presence_penalty = presence_penalty
+    self.type_scan = type_scan
     self.single_scan_wtime = single_scan_wtime
     self.__init_data()
 
@@ -69,11 +83,7 @@ class wrap_openai :
       'messages': []
     }
 
-  def ask(self, 
-      query, 
-      single_scan=False, 
-      multiple_scan=False
-    ):
+  def ask(self, query):
     """
       query         : List of query (source code's contents)
       single_query  : for each data do a separate query (default: False)
@@ -83,18 +93,10 @@ class wrap_openai :
       TODO: multiple_scan, and ask_with_openai
 
     """
-    return self.ask_with_proxy(
-      query, 
-      single_scan=single_scan, 
-      multiple_scan=False
-    )
+    return self.ask_with_proxy(query)
 
 
-  def ask_with_openai(self, 
-      query, 
-      single_scan=False, 
-      multiple_scan=False
-    ):
+  def ask_with_openai(self, query):
     """
       Here we should extend to openai module
     """
@@ -102,11 +104,7 @@ class wrap_openai :
     pass
 
 
-  def ask_with_proxy(self, 
-      query, 
-      single_scan=False, 
-      multiple_scan=False
-    ):
+  def ask_with_proxy(self, query):
     self.data['messages'] = []
     self.data['messages'].append(self.data_assistant)
     self.data['messages'].append(self.data_instruction)
@@ -115,10 +113,10 @@ class wrap_openai :
     for q in query :
       output.append( self.openai_prompt.body(*q) )
 
-    if not multiple_scan :
+    if self.type_scan != MULTIPLE_SCAN :
       self.data['messages'].append({'role':'user', 'content':''})
 
-      if single_scan :
+      if self.type_scan == SINGLE_SCAN :
         responses = []
 
         for i, q in enumerate(output) :
