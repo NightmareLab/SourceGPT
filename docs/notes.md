@@ -23,3 +23,6 @@
  - When the mongodb schemas are deleted remember also to delete `/tmp/db-capa`'s content as no delete option is permitted via web after you uploaded a project if the delete checkbox wasn't selected. If you need to delete projects add the web feature or do it by yourself.
 
 
+## 6 Source code project
+ - The tool does not recognize bytes data (e.g. pdf, jpg), so you should remove them before uploading the zip file
+

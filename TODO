@@ -1,7 +1,17 @@
 ## TODO list
 
- - support official openai api key
+Done:
+ - multiple scan mode (04/11/2023)
+
+Next step:
+ - add send multi-part file option
+ - Insert in a module all configs
+ - wrap in a class controlled exceptions
  - add code documentation
+
+
+Next next step:
  - add chat id support
+ - support official openai api key
  - more stuff ...
 
