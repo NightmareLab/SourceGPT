@@ -132,7 +132,16 @@ class wrap_openai :
       else :
         self.data['messages'][-2]['content'] = "\n".join(output)
         resp_q = requests.post(self.url, headers=self.headers, json=self.data)
-        return resp_q.json()
+
+        try :
+          rets = resp_q.json()
+        except Exception as ex :
+          if "PayloadTooLargeError" in resp_q.text :
+            raise Exception("Payload (source code) too large")
+          else :
+            raise Exception("Unknown response received: {}".format(resp_q.text))
+
+        return rets
 
     else :
       raise Exception(
