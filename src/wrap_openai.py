@@ -117,10 +117,11 @@ class wrap_openai :
 
     if not multiple_scan :
       self.data['messages'].append({'role':'user', 'content':''})
-      self.data['messages'].append(self.openai_prompt.tail())
 
       if single_scan :
+        self.data['messages'].append({'role':'user', 'content':self.openai_prompt.tail()})
         responses = []
+
         for i, q in enumerate(output) :
           self.data['messages'][-2]['content'] = q
           resp_q = requests.post(self.url, headers=self.headers, json=self.data)
@@ -130,7 +131,8 @@ class wrap_openai :
         return responses
 
       else :
-        self.data['messages'][-2]['content'] = "\n".join(output)
+        self.data['messages'][-1]['content'] = \
+          "\n".join(output) + "\n" + self.openai_prompt.tail()
         resp_q = requests.post(self.url, headers=self.headers, json=self.data)
 
         try :
