@@ -119,13 +119,15 @@ class wrap_openai :
       self.data['messages'].append({'role':'user', 'content':''})
 
       if single_scan :
-        self.data['messages'].append({'role':'user', 'content':self.openai_prompt.tail()})
         responses = []
 
         for i, q in enumerate(output) :
-          self.data['messages'][-2]['content'] = q
+          self.data['messages'][-1]['content'] = q + "\n" + self.openai_prompt.tail()
           resp_q = requests.post(self.url, headers=self.headers, json=self.data)
-          responses.append([query[i][0], resp_q.json()])
+
+          rets = self.check_json_response(resp_q)
+
+          responses.append([query[i][0], rets])
           time.sleep(self.single_scan_wtime)
 
         return responses
@@ -134,21 +136,27 @@ class wrap_openai :
         self.data['messages'][-1]['content'] = \
           "\n".join(output) + "\n" + self.openai_prompt.tail()
         resp_q = requests.post(self.url, headers=self.headers, json=self.data)
-
-        try :
-          rets = resp_q.json()
-        except Exception as ex :
-          if "PayloadTooLargeError" in resp_q.text :
-            raise Exception("Payload (source code) too large")
-          else :
-            raise Exception("Unknown response received: {}".format(resp_q.text))
-
-        return rets
+        return self.check_json_response(resp_q)
 
     else :
-      raise Exception(
-        "'multiple_scan' does not work well with chatgpt plus proxied api. " +\
-        "Instead openai api should be used"
-      )
+      # Note: multiple_scan' does not work well with chatgpt plus proxied api
+      #       Instead openai api should be used"
+      for i, q in enumerate(output) :
+        self.data['messages'].append({'role':'user', 'content':q})
+
+      self.data['messages'][-1]['content'] += "\n" + self.openai_prompt.tail()
+      resp_q = requests.post(self.url, headers=self.headers, json=self.data)
+      return self.check_json_response(resp_q)
+
+  def check_json_response(self, resp_q):
+    try :
+      rets = resp_q.json()
+    except Exception as ex :
+      if "PayloadTooLargeError" in resp_q.text :
+        raise Exception("Payload (source code) too large")
+      else :
+        raise Exception("Unknown response received: {}".format(resp_q.text))
+    return rets
+
 
 
