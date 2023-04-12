@@ -45,6 +45,7 @@ def add_extension(wrap_mongo, extns):
     extns.html_file,
     extra = extns.extra
   )
+  return extension_id
 
 
 def init(wrap_mongo):
@@ -85,7 +86,7 @@ class WrapExtension:
 
   def f(self, id_, *args, **kwargs):
     if id_ in self.trampoline :
-      return self.trampoline[id_](*args, **kwargs)
+      return self.trampoline[id_](id_, *args, **kwargs)
     else :
       raise Exception("Invalid '{}' extension id".format(id_)) 
 

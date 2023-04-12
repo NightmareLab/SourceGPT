@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{% block title %} Extension Skel {% endblock %}</h1>
+  <h1>{% block title %} Extension Skel {% endblock %}</h1>
+
+  {% if status.startswith('Ok') %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:MediumSeaGreen;">Success - {{status}}</div>
+    </nav>
+
+  {% elif status != "" %}
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand" style="background-color:tomato;">{{status}}</div>
+    </nav>
+
+  {% endif %}
+
+
+  <form action="/extension?id_extns={{extension_id}}" method="POST">
+
+    <div>
+      <label for="test_form">Test form</label>
+      <input type="text"  class="form-control" placeholder="<test-form>" id="test_form" name="test_form">
+    </div>
+    <button type="submit" class="btn btn-primary" value="Upload">test POST</button>
+  </form>
+
 
 {% endblock %}

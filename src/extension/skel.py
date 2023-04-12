@@ -66,8 +66,9 @@ After i do that print what the code is doing."""
 
 
 ## The method main should be extended as follows
-def main(db_session, request_session, *args, **kwargs):
+def main(id_extension, db_session, request_session, *args, **kwargs):
   """
+    id_extension    : id on extension schema
     db_session      : Db session saved as WrapMongo class
     request_session : flask request object
   """

@@ -309,24 +309,28 @@ def extension():
     prompt_model = wrap_mongo.get_prompt_entry(extns['id_prompt'])
 
   if request.method == 'POST' :
-    return "<html>TODO</html>" 
+    if extns != None :
+      try :
+        wrap_extension.f(extns['id'], wrap_mongo, request)
+        status="Ok"
+      except Exception as ex :
+        status="Fail: " + str(ex)
+
+  if extns != None :
+    return render_template(
+      'extension/{}'.format(extns['html_file']),
+      extension_id = extns['id'],
+      prompt_model = prompt_model,
+      extension_model = extns,
+      status=status
+    )
 
   else :
-    if extns is None :
-      return render_template(
-        "extension.html",
-        extensions = extensions,
-        order_view = order_view
-      )
-
-    else :
-      return render_template(
-        'extension/{}'.format(extns['html_file']),
-        prompt_model = prompt_model,
-        extension_model = extns,
-        status=status
-      )
-
+    return render_template(
+      "extension.html",
+      extensions = extensions,
+      order_view = order_view
+    )
 
 
 
