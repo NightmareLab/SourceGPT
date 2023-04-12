@@ -21,13 +21,14 @@ instruction="""I am inspecting the source code of the smart contract project "<@
 
 ```
 Title: <file-name>
+Part: <file-part>
 Text:
 <file-content>
 EOF@#^#@
 
 ```
 
-With '<file-name>' as the full-path of the file, and '<file-content>' the content's file, and 'EOF@#^#@' as the separator to terminate a section. After i ended to upload source codes i will send the line:
+With '<file-name>' as the full-path of the file, '<file-part>' as the content's file part number with '0' denoting the last part, and '<file-content>' as the content's file, and 'EOF@#^#@' as the separator to terminate a section. After i ended to upload source codes i will send the line:
 
 ```
 EOF@#:#@

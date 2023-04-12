@@ -40,7 +40,8 @@ class wrap_openai :
       presence_penalty=0,
       type_scan=default_scan,
       single_scan_wtime=None,
-      openai_proxy_url=None
+      openai_proxy_url=None,
+      max_tokens=None
     ):
     if openai_server_ == "openai" :
       raise Exception("TODO")
@@ -58,6 +59,7 @@ class wrap_openai :
     self.presence_penalty = presence_penalty
     self.type_scan = type_scan
     self.single_scan_wtime = single_scan_wtime
+    self.max_tokens = max_tokens
     self.__init_data()
 
 
@@ -109,18 +111,27 @@ class wrap_openai :
     self.data['messages'].append(self.data_assistant)
     self.data['messages'].append(self.data_instruction)
 
+    self.openai_prompt.reset_token_counters()
+
     output = []
     for q in query :
-      output.append( self.openai_prompt.body(*q) )
+      output.append(self.openai_prompt.body(*q))
+      if self.type_scan == SINGLE_SCAN and \
+        self.openai_prompt.latest_total_tokens >= self.max_tokens :
+          raise Exception("Can't use single_scan mode on a file with {} tokens".format(
+            self.openai_prompt.latest_total_tokens)
+          )
 
     if self.type_scan != MULTIPLE_SCAN :
       self.data['messages'].append({'role':'user', 'content':''})
+      self.data['messages'].append({'role':'user', 'content':self.openai_prompt.tail()})
 
       if self.type_scan == SINGLE_SCAN :
         responses = []
 
         for i, q in enumerate(output) :
-          self.data['messages'][-1]['content'] = q + "\n" + self.openai_prompt.tail()
+          # note: if we're here, then we know that len(q) is 1
+          self.data['messages'][-2]['content'] = q[0]
           resp_q = requests.post(self.url, headers=self.headers, json=self.data)
 
           rets = self.check_json_response(resp_q)
@@ -131,20 +142,33 @@ class wrap_openai :
         return responses
 
       else :
-        self.data['messages'][-1]['content'] = \
-          "\n".join(output) + "\n" + self.openai_prompt.tail()
+        
+        if self.openai_prompt.total_tokens >= self.max_tokens :
+          raise Exception("Can't use collapse_scan mode as the tokens are {}".format(
+            self.openai_prompt.total_tokens)
+          )
+ 
+        # note: if we're here, then we know that len(x) is 1
+        self.data['messages'][-2]['content'] = "\n".join([ x[0] for x in output ])
         resp_q = requests.post(self.url, headers=self.headers, json=self.data)
         return self.check_json_response(resp_q)
 
     else :
-      # Note: multiple_scan' does not work well with chatgpt plus proxied api
-      #       Instead openai api should be used"
+      # NOTE: multiple_scan' does not work well with chatgpt plus proxied api
+      #       Instead openai api should be used or chatgpt chat
       for i, q in enumerate(output) :
-        self.data['messages'].append({'role':'user', 'content':q})
+        for j, p in enumerate(q) :
+          with open("/tmp/lol123/session{}_{}.txt".format(i,j), "w") as fp :
+            fp.write(p)
 
-      self.data['messages'][-1]['content'] += "\n" + self.openai_prompt.tail()
+      for q in output :
+        for p in q :
+          self.data['messages'].append({'role':'user', 'content':p})
+
+      self.data['messages'].append({'role':'user', 'content':self.openai_prompt.tail()})
       resp_q = requests.post(self.url, headers=self.headers, json=self.data)
       return self.check_json_response(resp_q)
+
 
   def check_json_response(self, resp_q):
     try :

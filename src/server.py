@@ -54,7 +54,10 @@ def allowed_file(filename):
 def launch_thread(proj_id, result_id):
   pid = os.fork()
   if pid == 0 :
-    work.work(proj_id, result_id, wrap_mongo)
+    try :
+      work.work(proj_id, result_id, wrap_mongo)
+    except Exception as ex :
+      print("BAD exception: {}".format(ex))
     sys.exit(0)
   else :
     return

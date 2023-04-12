@@ -67,7 +67,7 @@ def work(proj_id, result_id, wrap_mongo):
   api_key = settings['api_key']
 
   prompt_sel = wrap_mongo.get_prompt_entry(result_entry['id_prompt'])
-  prompt_sel_class = openai_prompt.PromptClass(prompt_sel)
+  prompt_sel_class = openai_prompt.PromptClass(prompt_sel, settings["max_tokens"])
 
   file_tounzip_path = proj_entry['name']
   resdir = "res{}".format(result_id)
@@ -122,7 +122,8 @@ def work(proj_id, result_id, wrap_mongo):
       openai_server_ = "proxy",
       single_scan_wtime=result_entry["single_scan_wtime"],
       type_scan=result_entry["type_scan"],
-      openai_proxy_url= wrap_mongo.get_proxy()
+      openai_proxy_url= wrap_mongo.get_proxy(),
+      max_tokens = settings["max_tokens"]
     )
  
     query = []

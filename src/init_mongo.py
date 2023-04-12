@@ -23,9 +23,12 @@ default_sets = {
   }
 }
  
-default_single_scan_wtime = 5  #5s
+### OpenAI and proxy settings
 default_proxy = "https://api.pawan.krd/v1/chat/completions"
+default_max_tokens = 4097
 
+
+default_single_scan_wtime = 5  #5s
 # Type of scan
 COLLAPSE_SCAN = 0
 SINGLE_SCAN = 1
@@ -94,6 +97,7 @@ class WrapMongo(object) :
       'id_prompt' : 0,
       'api_key' : '',
       'proxy' : default_proxy,
+      'max_tokens' : default_max_tokens,
       "tmp_folder" : tmp_folder,
       "default_sets" : default_sets,
       "default_wtime" : 5
@@ -333,9 +337,9 @@ class WrapMongo(object) :
       description,
       assistant,
       instruction,
-      char_separator=None,
-      char_terminator=None,
-      char_proj_name_holder=None,
+      char_separator="",
+      char_terminator="",
+      char_proj_name_holder="",
       blacklist=None
     ):
 
@@ -361,8 +365,8 @@ class WrapMongo(object) :
     ]
  
     for x in prompt_arg :
-      loc_x = locals()[x]
-      if loc_x != None :
+      loc_x = locals()[x].strip()
+      if loc_x != "" :
         set_text(x, loc_x)
 
     if blacklist :
