@@ -1,14 +1,16 @@
 ## TODO list
 
 Done:
- - multiple scan mode (04/11/2023)
+ - multiple scan mode (04/2023)
  - add send multi-part file option
+ - add multiple replacer support
+ - add extension python API support
 
 Next step:
- - add multiple replacer support
- - Add extension python API support
  - Insert in a module all configs
  - wrap in a class controlled exceptions
+ - add unit tests
+ - update .md docs
  - add code documentation
 
 

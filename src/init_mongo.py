@@ -70,10 +70,23 @@ def get_template_prompt():
       "char_terminator" : default_sets["char_terminator"],
       "char_proj_name_holder" : default_sets["char_proj_name_holder"]
     },
-    "blacklist" : default_sets["blacklist"]
+    "blacklist" : default_sets["blacklist"],
+    "extra_replacer" : {}
   }
   return template_prompt
   
+
+def get_template_extensions():
+  template_extns = {
+    "id" : 0,
+    "id_prompt" : 0,
+    "name" : '',
+    "description" : '',
+    "html_file" : '',
+    "extra" : {}
+  }
+  return template_extns
+
 
 class WrapMongo(object) :
 
@@ -95,12 +108,14 @@ class WrapMongo(object) :
       'id_project' : 0,
       'id_result' : 0,
       'id_prompt' : 0,
+      'id_extns' : 0,
       'api_key' : '',
       'proxy' : default_proxy,
       'max_tokens' : default_max_tokens,
       "tmp_folder" : tmp_folder,
       "default_sets" : default_sets,
-      "default_wtime" : 5
+      "default_wtime" : 5,
+      "extns_are_init" : False
     }
     db[db_capa_tab_set].insert_one(data)
 
@@ -152,6 +167,13 @@ class WrapMongo(object) :
   def get_proxy(self):
     return self.local_settings["proxy"]
 
+  def set_extension_flag(self, flag=True):
+    self.local_settings["extns_are_init"] = flag
+    self.__update_db_view()
+
+  def get_extension_flag(self):
+    return self.local_settings["extns_are_init"]
+
 
   def __get_settings(self):
     return list(self.db[db_capa_tab_set].find())[0]
@@ -201,6 +223,9 @@ class WrapMongo(object) :
   def get_db_prompt(self):
     return self.get_table("prompt")
 
+  def get_db_extension(self):
+    return self.get_table("extension")
+
   def insert_db_projects(self, data):
     return self.insert_db(data, "projects")
 
@@ -209,6 +234,10 @@ class WrapMongo(object) :
 
   def insert_db_prompt(self, data):
     return self.insert_db(data, "prompt")
+
+  def insert_db_extension(self, data):
+    return self.insert_db(data, "extension")
+
 
   def get_results(self):
     tab = self.get_db_results()
@@ -252,6 +281,12 @@ class WrapMongo(object) :
       })
     return output
 
+  def get_extensions(self):
+    tab = self.get_db_extension()
+    tab = tab.find().sort("id",1)
+    output = list(tab)
+    return output
+
 
   def get_entry(self, _id, tab_name="results", enforce_asserts=True):
     tab = self.get_table(tab_name)
@@ -271,6 +306,13 @@ class WrapMongo(object) :
 
   def get_prompt_entry(self, prompt_id, enforce_asserts=True):
     return self.get_entry(prompt_id, tab_name="prompt", enforce_asserts=enforce_asserts)
+
+  def get_extension_entry(self, extension_id, enforce_asserts=True):
+    return self.get_entry(
+      extension_id, 
+      tab_name="extension", 
+      enforce_asserts=enforce_asserts
+    )
 
   def update_proj_name(self, proj_id, name):
     query = {"id" : proj_id}
@@ -374,6 +416,29 @@ class WrapMongo(object) :
 
     self.insert_db_prompt(prompt)
     return prompt_id
+
+
+  def add_extension_entry(self, 
+      name,
+      description,
+      id_prompt,
+      html_file,
+      extra = {}
+    ):
+    assert name, "'name' extension field is None"
+    assert description, "'description' extension field is None"
+    assert html_file, "'html_file' extension field is None"
+    extension = get_template_extensions()
+    extension_id = self.increment_id("id_extns")
+    extension['id'] = extension_id
+    extension['id_prompt'] = id_prompt
+    extension['name'] = name
+    extension['description'] = description
+    extension['html_file'] = html_file
+    extension['extra'] = extra.copy()
+    self.insert_db_extension(extension)
+    return extension_id
+
 
 
 #################### Examples

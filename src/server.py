@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 import logging
 
 from init_mongo import WrapMongo
+import extension as extension_mod
 import work
 
 
@@ -29,6 +30,7 @@ ALLOWED_EXTENSIONS = {'zip'}
 wrap_mongo = None
 mongo_ip = "mongo"
 
+wrap_extension = None
 
 
 ########## Extracted from init_mongo.py
@@ -291,6 +293,42 @@ def uploadfile():
   )
 
 
+@app.route('/extension', methods=['GET', 'POST'])
+def extension():
+  order_view = ["id", "id_prompt", "name", "description", "html_file"]
+  extensions = wrap_mongo.get_extensions()
+  lookup_id_extns = { str(x['id']) : x for x in extensions }
+  status = ''
+
+  extns = None
+  prompt_model = None
+
+  data = request.args
+  if "id_extns" in data : 
+    extns = lookup_id_extns[data['id_extns']]
+    prompt_model = wrap_mongo.get_prompt_entry(extns['id_prompt'])
+
+  if request.method == 'POST' :
+    return "<html>TODO</html>" 
+
+  else :
+    if extns is None :
+      return render_template(
+        "extension.html",
+        extensions = extensions,
+        order_view = order_view
+      )
+
+    else :
+      return render_template(
+        'extension/{}'.format(extns['html_file']),
+        prompt_model = prompt_model,
+        extension_model = extns,
+        status=status
+      )
+
+
+
 
 ## API
 
@@ -324,6 +362,15 @@ def get_prompt():
   del result_entry['_id']
   return str(result_entry)
 
+@app.route('/api/extension', methods=['GET'])
+def get_extension():
+  data = request.args
+  if 'id' not in data :
+    return ''
+  extension_id = int(data['id'])
+  extension_entry = wrap_mongo.get_extension_entry(extension_id)
+  del extension_entry['_id']
+  return str(extension_entry)
 
 
 if __name__ == "__main__":
@@ -351,6 +398,8 @@ if __name__ == "__main__":
   )
   args = parser.parse_args()
   wrap_mongo = WrapMongo(mongo_ip=args.mongo_ip)
+  wrap_extension = extension_mod.init(wrap_mongo)
+
   app.config['UPLOAD_FOLDER'] = wrap_mongo.local_settings['tmp_folder']
   app.run(host=args.host, port=os.environ.get("FLASK_SERVER_PORT", args.port), debug=args.debug)
   # kill -11 `ps aux | grep python | grep defunct | cut -d' ' -f 2`

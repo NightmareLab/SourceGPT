@@ -26,6 +26,7 @@ Follow in order:
  - [Notes and limitations](./docs/notes.md)
  - [Tests](./docs/tests.md)
  - [Schemas db](./docs/db.md)
+ - [extensions support](./docs/add_extension.md)
 
 
 As the next step buy chatgpt plus and host your own reverse proxy, then you can try adding some of these prompts (with adjustments) https://github.com/f/awesome-chatgpt-prompts
