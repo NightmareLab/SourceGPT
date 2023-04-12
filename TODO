@@ -2,9 +2,11 @@
 
 Done:
  - multiple scan mode (04/11/2023)
+ - add send multi-part file option
 
 Next step:
- - add send multi-part file option
+ - add multiple replacer support
+ - Add extension python API support
  - Insert in a module all configs
  - wrap in a class controlled exceptions
  - add code documentation
