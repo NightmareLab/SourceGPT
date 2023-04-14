@@ -34,6 +34,9 @@ source object_virtualenv/bin/activate
 
 cd src
 python -m pip install -r requirements.txt
+
+pip install nltk
+python -m nltk.downloader popular
 ```
 
 Spawn the service:

@@ -14,7 +14,8 @@ COPY . .
 RUN <<EOF
 apk update
 apk add git
-apk add zip vim wget curl
+apk add zip vim wget curl 
+apk add gcc g++
 EOF
 
 
@@ -23,6 +24,10 @@ addgroup -S docker
 adduser -S --shell /bin/bash --ingroup docker vscode
 EOF
 
+RUN <<EOF
+pip install nltk
+python -m nltk.downloader popular
+EOF
 
 
 #apk add --update alpine-sdk

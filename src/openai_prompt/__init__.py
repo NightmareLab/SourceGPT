@@ -2,8 +2,8 @@ import openai_prompt.capa_minimal as capa_minimal
 import openai_prompt.smartcontract_vuln as smartcontract_vuln
 import openai_prompt.rce_taint_analysis as rce_taint_analysis
 
-import tokenize
-from io import BytesIO
+import nltk
+from nltk import word_tokenize as nlp
 
 
 examples = [
@@ -67,7 +67,7 @@ class PromptClass :
     text = args[1]
 
     format_str = "```\nTitle: {}\nPart: 100\nText:\n\n{}\n\n```".format(filename, char_separator)
-    format_str_tokens = len(list(tokenize.tokenize(BytesIO(format_str.encode('utf-8')).readline)))
+    format_str_tokens = len(nlp(format_str))
     max_tokens = (self.max_tokens - format_str_tokens)
 
     text_lines = text.split("\n")
@@ -98,15 +98,8 @@ class PromptClass :
     cc_index = 0
 
     for i,x in enumerate(text_lines) :
-      x_enc = x.encode(text_enc)
-
-      # Note: No time rn but because of some issue with BytesIO + tokenize, replace enclosure chars
-      # e.g. len( list( tokenize.tokenize(BytesIO(b"start { end").readline) ))
-      # will raise: tokenize.TokenError: ('EOF in multi-line statement', (2, 0))
-      for chr_rep in list("{}[]()") :
-        x_enc = x_enc.replace(chr_rep.encode(), b".")
-
-      current_tokens = len(list(tokenize.tokenize(BytesIO(x_enc).readline))) + 1
+      # + 1 for '\n' char
+      current_tokens = len(nlp(x)) + 1
 
       # if current line has more than max_tokens, not supported sorry
       if current_tokens >= max_tokens :

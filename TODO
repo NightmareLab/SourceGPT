@@ -7,6 +7,9 @@ Done:
  - add extension python API support
 
 Next step:
+ - add split single-scan on function
+ - add load multi-part function (if a function has amount of tokens > 4096)
+
  - Insert in a module all configs
  - wrap in a class controlled exceptions
  - add unit tests
